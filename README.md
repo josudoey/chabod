@@ -8,6 +8,11 @@
 
 **專案網址**: https://chabod.fruitful-tools.com
 
+Demo 帳號：
+
+* admin@fruitful-tools.com
+* strongAndFruitfulPassword
+
 ## 關於 Chabod
 
 **Chabod** 是一個開源、多租戶（multi-tenant）的教會管理系統。每間教會都可以註冊自己的子站、管理自己的會員與資料。
