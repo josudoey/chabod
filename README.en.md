@@ -8,6 +8,11 @@
 
 **Project URL**: https://chabod.fruitful-tools.com
 
+Demo Account：
+
+* admin@fruitful-tools.com
+* strongAndFruitfulPassword
+
 ## About Chabod
 
 **Chabod** is an open-source, multi-tenant Church Management System. Each church can register their own instance with independent member and data management.
