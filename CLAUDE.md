@@ -1,251 +1,235 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+此檔案為 Claude Code 在此專案的工作指南。
 
-## Common Commands
+## 常用指令
 
-### Development
+### 開發
 
-- `npm run dev` - Start development server (localhost:8080)
-- `npm run build` - Production build
-- `npm run build:dev` - Development build
-- `npm run preview` - Preview production build
+- `npm run dev` - 啟動開發伺服器 (localhost:8080)
+- `npm run build` - 正式版建置
+- `npm run build:dev` - 開發版建置
+- `npm run preview` - 預覽正式版
 
-### Code Quality
+### 程式碼品質
 
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues automatically
-- `npm run format` - Format code with Prettier
+- `npm run lint` - 執行 ESLint
+- `npm run lint:fix` - 自動修復 ESLint 問題
+- `npm run format` - 使用 Prettier 格式化
 
-### Testing
+### 測試
 
-- `npm test` - Run all tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:coverage` - Run tests with coverage
-- `npm run test:rls` - Run RLS (Row Level Security) tests only
-- `npm run test:ui` - Run UI component tests only
-- `npm run test:ui:watch` - Run UI tests in watch mode
+- `npm test` - 執行所有測試
+- `npm run test:watch` - 監視模式測試
+- `npm run test:coverage` - 測試覆蓋率
+- `npm run test:rls` - RLS (Row Level Security) 測試
+- `npm run test:ui` - UI 元件測試
+- `npm run test:ui:watch` - UI 監視測試
 
-#### Quick Test Iteration Commands
+#### 快速測試指令
 
 ```bash
-# UI component test (fast iteration)
+# UI 測試
 npm run test:ui -- ComponentName.test.tsx
 npm run test:ui:watch -- ComponentName.test.tsx
 
-# RLS test (specific file)
+# RLS 測試
 ./tests/rls/run-rls-tests.sh groups.rls.test.ts
 ./tests/rls/run-rls-tests.sh --watch groups.rls.test.ts
-
-# Run test by pattern
-npm run test:ui -- --testNamePattern="should render"
 ```
 
-#### When to Use Which Test Command
+#### 測試指令選擇
 
-**Use `npm run test:ui` (Frontend Only) When:**
+**`npm run test:ui` (僅前端)：**
 
-- **Only** modifying React components, hooks, or UI logic
-- **Only** changing frontend functionality (forms, navigation, styling)
-- **No** database operations or service layer changes
-- **Fast feedback** needed for UI development
+- 僅修改 React 元件/hooks/UI
+- 僅前端功能變更
+- 無資料庫/服務層變更
+- 需要快速回饋
 
-**Use `npm run test` (Full Test Suite) When:**
+**`npm run test` (完整測試)：**
 
-- **Any** backend/database changes (new tables, RLS policies, service functions)
-- **Any** Supabase schema or migration changes
-- **Cross-cutting** changes affecting both frontend and backend
-- **Before** committing or creating PR
-- **Any** changes to `src/lib/services/` or `src/integrations/supabase/`
+- 任何後端/資料庫變更
+- Supabase schema/migration 變更
+- 跨層級變更
+- 提交前/PR 前
 
-### Special Testing
+### 特殊測試
 
-- `./tests/rls/run-rls-tests.sh` - Run RLS tests with Supabase setup
-- `./tests/rls/run-rls-tests.sh --coverage` - Run RLS tests with coverage
+- `./tests/rls/run-rls-tests.sh` - RLS 測試含 Supabase 設定
+- `./tests/rls/run-rls-tests.sh --coverage` - RLS 測試含覆蓋率
 
-## Architecture Overview
+## 架構概覽
 
-### Tech Stack
+### 技術堆疊
 
 - **Frontend**: React 19 + TypeScript, Vite, Tailwind CSS
-- **UI Components**: shadcn/ui (Radix UI primitives)
+- **UI**: shadcn/ui (Radix UI primitives)
 - **Backend**: Supabase (PostgreSQL + Auth + Storage)
 - **Forms**: React Hook Form + Zod validation
-- **State Management**: React Query for server state
-- **Internationalization**: React i18next (Chinese/English)
+- **State**: React Query
+- **i18n**: React i18next (中/英)
 
-### Multi-Tenant Architecture
+### Multi-Tenant 架構
 
-This is a **multi-tenant SaaS application** for church management where:
+教會管理 SaaS 應用：
 
-- Each church (tenant) has isolated data via Supabase RLS policies
-- Tenant-specific routing: `/tenant/:tenantId/...`
-- Global routes for tenant selection and authentication
-- Comprehensive RLS testing ensures data isolation
+- 每個教會透過 Supabase RLS 政策隔離資料
+- 租戶路由：`/tenant/:tenantId/...`
+- 全域路由：租戶選擇和身份驗證
+- 完整 RLS 測試確保資料隔離
 
-### Key Directory Structure
+### 目錄結構
 
 ```
 src/
-├── components/           # UI components organized by feature
-│   ├── Auth/            # Authentication components
-│   ├── Events/          # Event management
-│   ├── Groups/          # Group management
-│   ├── Members/         # Member management
-│   ├── Resources/       # Resource management
-│   ├── Services/        # Service management
-│   ├── ServiceEvents/   # Service event scheduling
-│   ├── Tenants/         # Tenant management
-│   ├── shared/          # Shared components
-│   └── ui/              # shadcn/ui components
-├── contexts/            # React contexts (Auth, Session)
-├── hooks/               # Custom React hooks
-├── integrations/        # External service integrations
-│   └── supabase/        # Supabase client and types
-├── lib/                 # Utility functions and services
-│   └── services/        # Business logic services
-├── pages/               # Page components
-│   └── tenant/          # Tenant-specific pages
-└── main.tsx            # App entry point
+├── components/     # UI 元件（按功能分組）
+│   ├── Auth/      # 身份驗證
+│   ├── Events/    # 活動管理
+│   ├── Groups/    # 小組管理
+│   ├── Members/   # 成員管理
+│   ├── Resources/ # 資源管理
+│   ├── Services/  # 服務管理
+│   ├── shared/    # 共用元件
+│   └── ui/        # shadcn/ui 元件
+├── contexts/      # React contexts
+├── hooks/         # custom hooks
+├── integrations/  # 外部服務整合
+│   └── supabase/  # Supabase client/types
+├── lib/           # 工具函數和服務
+│   └── services/  # 業務邏輯
+├── pages/         # 頁面元件
+└── main.tsx       # 進入點
 ```
 
-### Core Patterns
+## 核心模式
 
-#### Type Safety
+### 類型安全
 
-- All database types generated from Supabase in `src/integrations/supabase/types.ts`
-- Extended types in `src/lib/types.ts` for complex relationships
-- Check `src/lib/types.ts` first to avoid duplicate type definitions
-- Use compound types for entities with relations (e.g., `TenantWithUsage`)
+- 資料庫類型：`src/integrations/supabase/types.ts`
+- 擴展類型：`src/lib/types.ts`
+- 優先檢查現有類型定義
+- 使用複合類型處理關聯 (如 `TenantWithUsage`)
 
-#### Authentication & Session Management
+### 身份驗證與 Session
 
-- `SessionContext` provides user session, profile, and auth state
-- All tenant operations require authentication
-- Profile data fetched automatically on auth state changes
+- `SessionContext` 提供 user session/profile/auth state
+- 所有租戶操作需要身份驗證
+- Profile 資料在 auth 狀態變更時自動取得
 
-#### Data Access & Supabase Integration
+### 資料存取與 Supabase 整合
 
-- **Always** import Supabase client from `@/integrations/supabase/client`
-- **Never** create new Supabase client instances
-- Perform all database operations in service files in `src/lib/services/`
-- Handle "not found" errors properly (code === "PGRST116")
-- Use try/catch blocks with meaningful error messages
-- React Query for caching and data synchronization
+- **必須**從 `@/integrations/supabase/client` import
+- **絕不**建立新的 Supabase client instances
+- 所有資料庫操作在 `src/lib/services/` 執行
+- 正確處理 "not found" 錯誤 (code === "PGRST116")
+- 使用 try/catch 區塊處理錯誤
+- React Query 負責快取和同步
 
-#### Form Handling
+### 表單處理
 
-- **Always** use React Hook Form + Zod + zodResolver for forms
-- Use `zodResolver` from `@hookform/resolvers/zod`
-- Define Zod schemas with meaningful error messages
-- Use shadcn Form components for consistent UI
-- Handle loading states and form submission errors
+- **必須**使用 React Hook Form + Zod + zodResolver
+- 使用 `zodResolver` from `@hookform/resolvers/zod`
+- 定義有意義錯誤訊息的 Zod schemas
+- 使用 shadcn Form 元件確保一致 UI
+- 處理 loading 狀態和表單提交錯誤
 
-**Standard Structure:**
+**標準結構：**
 
 ```tsx
 const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "必填"),
 });
 
 const form = useForm<z.infer<typeof formSchema>>({
   resolver: zodResolver(formSchema),
   defaultValues: { name: "" },
 });
-
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  try {
-    // API call
-    // Success message
-  } catch (error) {
-    // Error handling
-  }
-};
 ```
 
-#### Internationalization
+### 國際化
 
-- **Replace ALL hardcoded text** with translation keys
-- Use `useTranslation` hook with specific namespaces
-- Available namespaces: `common`, `auth`, `dashboard`, `members`, `groups`, `resources`, `services`, `serviceEvents`, `events`, `announcements`, `tenant`, `profile`, `nav`, `shared`
-- Use `common` namespace for generic UI actions (save, cancel, loading)
-- Syntax: `t('key')` for single namespace, `t('namespace:key')` for multiple
-- Translation files in `public/locales/[lang]/[namespace].json`
+- **替換所有**硬編碼文字為翻譯 keys
+- 使用 `useTranslation` hook 搭配指定 namespace
+- 可用 namespace: `common`, `auth`, `dashboard`, `members`, `groups`, `resources`, `services`, `events`
+- `common` namespace 用於通用 UI 動作 (save, cancel, loading)
+- 語法：`t('key')` 單一 namespace，`t('namespace:key')` 多個
+- 翻譯檔案位於 `public/locales/[lang]/[namespace].json`
 
-#### UI & Styling
+### UI 與樣式
 
-- **Always** use Tailwind CSS for styling
-- **Always** use shadcn/ui components as base templates
-- **Never** modify `components/ui/` directly (shadcn components)
-- Use composition patterns with shadcn components
-- Follow PascalCase for component files and functions
-- **Never** perform Supabase queries in components
-- **Always** use service functions from `src/lib/services/`
-- Use React Query for data fetching and caching
+- **必須**使用 Tailwind CSS
+- **必須**使用 shadcn/ui 元件作為基礎模板
+- **絕不**直接修改 `components/ui/` (shadcn 元件)
+- 使用 composition patterns 搭配 shadcn 元件
+- 遵循 PascalCase 命名元件檔案和函數
+- **絕不**在元件中執行 Supabase 查詢
+- **必須**使用 `src/lib/services/` 的服務函數
+- 使用 React Query 處理資料取得和快取
 
-#### UX Conventions
+### UX 慣例
 
-- **Always** prompt confirmation for delete operations
-- **Clearly warn** about cascading deletes in confirmation dialogs
-- **Auto-refresh** lists/tables after CRUD operations
-- Show loading states during form submissions
-- Display success/error messages after operations
+- **必須**在刪除操作前提示確認
+- **清楚警告**確認對話框中的串聯刪除
+- CRUD 操作後**自動重新整理**列表/表格
+- 表單提交時顯示 loading 狀態
+- 操作後顯示成功/錯誤訊息
 
-### Testing Strategy
+## 測試策略
 
-#### RLS (Row Level Security) Tests
+### RLS (Row Level Security) 測試
 
-- Located in `tests/rls/`
-- Test database security policies and tenant isolation
-- Use real Supabase instance with containerized services
-- Critical for multi-tenant data security
-- Use `createRLSTest()` and `createStandardRLSTestSuite()`
-- Always test: owner access, member restrictions, tenant isolation
-- Always cleanup with `try/finally` blocks
+- 位置：`tests/rls/`
+- 測試資料庫安全政策和租戶隔離
+- 使用真實 Supabase instance 和容器化服務
+- 多租戶資料安全的關鍵
+- 使用 `createRLSTest()` 和 `createStandardRLSTestSuite()`
+- 必須測試：owner 存取、member 限制、租戶隔離
+- 必須使用 `try/finally` 區塊清理
 
-#### UI Component Tests
+### UI 元件測試
 
-- Located in `tests/ui/`
-- Test component behavior and user interactions
-- Mock external dependencies for isolation
-- Use React Testing Library patterns
-- Use `mockUseSessionHelpers.authenticated()` for auth state
-- Test user behavior, not implementation details
-- Use semantic queries: `getByRole`, `getByLabelText`
-- Test error states and loading states
+- 位置：`tests/ui/`
+- 測試元件行為和使用者互動
+- Mock 外部相依性以達到隔離
+- 使用 React Testing Library patterns
+- 使用 `mockUseSessionHelpers.authenticated()` 處理 auth 狀態
+- 測試使用者行為，非實作細節
+- 使用語意查詢：`getByRole`, `getByLabelText`
+- 測試錯誤狀態和 loading 狀態
 
-#### Required Coverage
+### 必需覆蓋率
 
-- **New database table** → RLS test required
-- **New component** → UI test required
-- **Mirror structure**: `src/components/Feature/` → `tests/ui/components/Feature/`
+- **新資料庫表格** → 需要 RLS 測試
+- **新元件** → 需要 UI 測試
+- **鏡像結構**：`src/components/Feature/` → `tests/ui/components/Feature/`
 
-### Development Notes
+## 開發注意事項
 
-#### Environment Setup
+### 環境設定
 
-- Uses Vite for development with HMR
-- Tailwind CSS for styling
-- ESLint + Prettier for code quality
-- Husky for Git hooks
+- 使用 Vite 開發與 HMR
+- Tailwind CSS 樣式
+- ESLint + Prettier 程式碼品質
+- Husky Git hooks
 
-#### Database Integration
+### 資料庫整合
 
-- Supabase migrations in `supabase/migrations/`
-- Row Level Security policies enforce tenant isolation
-- Generated types ensure type safety between frontend and backend
+- Supabase migrations 在 `supabase/migrations/`
+- Row Level Security 政策強制租戶隔離
+- 生成的類型確保前後端類型安全
 
-#### Deployment
+### 部署
 
-- Configured for Vercel deployment
-- Static files in `public/` directory
-- Build output in `dist/`
+- 設定為 Vercel 部署
+- 靜態檔案在 `public/` 目錄
+- 建置輸出在 `dist/`
 
-### Key Files to Reference
+### 重要檔案參考
 
-- `src/integrations/supabase/types.ts` - Database types
-- `src/lib/types.ts` - Extended application types
-- `src/contexts/AuthContext.tsx` - Authentication context
-- `package.json` - Available scripts and dependencies
-- `vite.config.ts` - Build configuration
-- `tests/README.md` - Comprehensive testing documentation
+- `src/integrations/supabase/types.ts` - 資料庫類型
+- `src/lib/types.ts` - 擴展應用類型
+- `src/contexts/AuthContext.tsx` - 身份驗證 context
+- `package.json` - 可用 scripts 和相依性
+- `vite.config.ts` - 建置設定
+- `tests/README.md` - 完整測試文件
